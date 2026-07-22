@@ -1,0 +1,19 @@
+.placeholder {
+  padding-top: 80rpx;
+  text-align: center;
+}
+
+.illust {
+  width: 280rpx;
+  height: 280rpx;
+  margin: 0 auto 28rpx;
+  display: block;
+}
+
+.title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 700;
+  margin-bottom: 16rpx;
+  color: var(--text);
+}

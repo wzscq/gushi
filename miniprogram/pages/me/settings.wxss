@@ -1,0 +1,37 @@
+.section {
+  background: var(--card);
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 48rpx;
+  border: 1rpx solid var(--card-border);
+}
+
+.about {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.desc {
+  font-size: 26rpx;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.logout-btn {
+  background: var(--card);
+  color: var(--accent);
+  border-radius: 24rpx;
+  border: 1rpx solid rgba(232, 90, 122, 0.3);
+  font-size: 30rpx;
+}
+
+.logout-btn::after {
+  border: none;
+}

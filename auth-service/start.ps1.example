@@ -1,0 +1,91 @@
+# 谷子 Auth Service 启动脚本模板（Windows PowerShell）
+#
+# 首次使用：复制本文件为 start.ps1（start.ps1 已在 .gitignore，不会提交）
+#   Copy-Item start.ps1.example start.ps1
+#
+# 用法：
+#   .\start.ps1              # 默认 go run
+#   .\start.ps1 -UseBinary   # 使用 bin/auth-server（需先 go build）
+#
+# 配置优先级（后者覆盖前者）：
+#   1. .env 文件
+#   2. 下方「环境变量配置」区块
+
+param(
+    [switch]$UseBinary
+)
+
+$ErrorActionPreference = "Stop"
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+Set-Location $ScriptDir
+
+function Import-DotEnv {
+    param([string]$Path)
+
+    if (-not (Test-Path $Path)) {
+        return
+    }
+
+    Get-Content $Path | ForEach-Object {
+        $line = $_.Trim()
+        if ($line -eq "" -or $line.StartsWith("#")) {
+            return
+        }
+        if ($line -match '^\s*([^#=]+?)=(.*)$') {
+            $key = $matches[1].Trim()
+            $value = $matches[2].Trim()
+            if ($value.StartsWith('"') -and $value.EndsWith('"')) {
+                $value = $value.Substring(1, $value.Length - 2)
+            }
+            if ($value.StartsWith("'") -and $value.EndsWith("'")) {
+                $value = $value.Substring(1, $value.Length - 2)
+            }
+            Set-Item -Path "Env:$key" -Value $value
+        }
+    }
+}
+
+# ---------- 1. 从 .env 加载（复制 .env.example 为 .env 后填写） ----------
+Import-DotEnv -Path (Join-Path $ScriptDir ".env")
+
+# ---------- 2. 环境变量配置（在此填写，会覆盖 .env 同名项） ----------
+# $env:AUTH_ADDR = ":8081"
+
+# $env:WECHAT_APP_ID = ""
+# $env:WECHAT_APP_SECRET = ""
+
+# $env:AUTH_PASSWORD_SECRET = ""
+
+# $env:CRV_BASE_URL = "http://127.0.0.1:8080"
+# $env:CRV_APPID = "gushi"
+
+# CRV 管理员签发的长期 int_ 集成令牌（必填）
+# $env:CRV_PROVISIONER_TOKEN = "int_xxxxxxxx"
+
+# $env:CRV_LOGIN_USERNAME_FIELD = "id"
+# $env:DEFAULT_USER_ROLE = "gushi_user"
+
+# ---------- 启动 ----------
+$binary = Join-Path $ScriptDir "bin/auth-server.exe"
+if (-not (Test-Path $binary)) {
+    $binary = Join-Path $ScriptDir "bin/auth-server"
+}
+
+Write-Host "[auth-service] AUTH_ADDR=$($env:AUTH_ADDR)"
+Write-Host "[auth-service] CRV_BASE_URL=$($env:CRV_BASE_URL)"
+if ($env:CRV_PROVISIONER_TOKEN) {
+    Write-Host "[auth-service] CRV_PROVISIONER_TOKEN=(set)"
+} else {
+    Write-Host "[auth-service] WARN: 未配置 CRV_PROVISIONER_TOKEN" -ForegroundColor Yellow
+}
+
+if ($UseBinary -and (Test-Path $binary)) {
+    Write-Host "[auth-service] starting $binary"
+    & $binary
+} else {
+    if ($UseBinary) {
+        Write-Host "[auth-service] binary not found, fallback to go run"
+    }
+    Write-Host "[auth-service] starting go run ./cmd/server"
+    go run ./cmd/server
+}

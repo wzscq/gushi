@@ -1,0 +1,17 @@
+{
+  "datasets": [
+    {
+      "name": "gushi_user_read_own_role_links",
+      "queryRoles": "gushi_user",
+      "mutationRoles": "gushi_user",
+      "Filter": {
+        "core_user_id": { "Op.eq": "%{CURRENT_USER_ID}" }
+      }
+    },
+    {
+      "name": "admin_all_role_links",
+      "queryRoles": "admin",
+      "mutationRoles": "admin"
+    }
+  ]
+}

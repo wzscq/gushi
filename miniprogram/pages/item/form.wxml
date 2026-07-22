@@ -1,0 +1,109 @@
+<view class="form-page">
+  <view wx:if="{{loading}}" class="loading text-muted">加载中…</view>
+
+  <block wx:else>
+    <view class="section">
+      <view class="section-title">图片</view>
+      <view class="photos">
+        <view class="photo" wx:for="{{photos}}" wx:key="key">
+          <image wx:if="{{item.src}}" src="{{item.src}}" mode="aspectFill" />
+          <view wx:else class="photo-placeholder">…</view>
+          <view class="photo-del" data-index="{{index}}" bindtap="removePhoto">×</view>
+        </view>
+        <view class="photo add" bindtap="choosePhotos" wx:if="{{photos.length < 9}}">
+          <text>+</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">基础信息</view>
+      <view class="field">
+        <text class="label">名称</text>
+        <input class="input" placeholder="必填（或添加图片）" value="{{name}}" data-field="name" bindinput="onInput" />
+      </view>
+      <view class="field">
+        <text class="label">IP / 作品</text>
+        <input class="input" placeholder="如：原神" value="{{ip}}" data-field="ip" bindinput="onInput" />
+      </view>
+      <view class="field">
+        <text class="label">角色</text>
+        <input class="input" placeholder="可选" value="{{character_name}}" data-field="character_name" bindinput="onInput" />
+      </view>
+      <view class="field">
+        <text class="label">品类</text>
+        <picker mode="selector" range="{{categories}}" range-key="label" value="{{categoryIndex}}" bindchange="onCategoryChange">
+          <view class="picker">{{categories[categoryIndex].label}}</view>
+        </picker>
+      </view>
+      <view class="field">
+        <text class="label">版本类型</text>
+        <picker mode="selector" range="{{versionTypes}}" range-key="label" value="{{versionTypeIndex}}" bindchange="onVersionTypeChange">
+          <view class="picker">{{versionTypes[versionTypeIndex].label}}</view>
+        </picker>
+      </view>
+    </view>
+
+    <view class="section" wx:if="{{versionTypes[versionTypeIndex].value === 'doujin'}}">
+      <view class="section-title">同人信息</view>
+      <view class="field">
+        <text class="label">社团</text>
+        <input class="input" value="{{circle}}" data-field="circle" bindinput="onInput" />
+      </view>
+      <view class="field">
+        <text class="label">作者</text>
+        <input class="input" value="{{author}}" data-field="author" bindinput="onInput" />
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">状态与整理</view>
+      <view class="field">
+        <text class="label">状态</text>
+        <picker mode="selector" range="{{statuses}}" range-key="label" value="{{statusIndex}}" bindchange="onStatusChange">
+          <view class="picker">{{statuses[statusIndex].label}}</view>
+        </picker>
+      </view>
+      <view class="field">
+        <text class="label">存放位置</text>
+        <input class="input" placeholder="可选" value="{{location}}" data-field="location" bindinput="onInput" />
+      </view>
+      <view class="field">
+        <text class="label">标签</text>
+        <input class="input" placeholder="逗号分隔，如：限定,官谷" value="{{tags}}" data-field="tags" bindinput="onInput" />
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">交易信息</view>
+      <view class="field">
+        <text class="label">购入价</text>
+        <input class="input" type="digit" placeholder="可选" value="{{purchase_price}}" data-field="purchase_price" bindinput="onInput" />
+      </view>
+      <view class="field">
+        <text class="label">购入日期</text>
+        <picker mode="date" value="{{purchase_date}}" bindchange="onDateChange">
+          <view class="picker">{{purchase_date || '选择日期'}}</view>
+        </picker>
+      </view>
+      <view class="field">
+        <text class="label">渠道</text>
+        <input class="input" placeholder="可选" value="{{purchase_source}}" data-field="purchase_source" bindinput="onInput" />
+      </view>
+      <view class="field">
+        <text class="label">订单号</text>
+        <input class="input" placeholder="可选" value="{{order_no}}" data-field="order_no" bindinput="onInput" />
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">备注</view>
+      <textarea class="textarea" placeholder="可选" value="{{note}}" data-field="note" bindinput="onInput" maxlength="500" />
+    </view>
+
+    <view class="actions">
+      <button class="btn-cancel" bindtap="handleCancel" disabled="{{saving}}">取消</button>
+      <button class="btn-save" loading="{{saving}}" disabled="{{saving}}" bindtap="handleSave">保存</button>
+    </view>
+  </block>
+</view>

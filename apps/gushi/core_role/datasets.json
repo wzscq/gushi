@@ -1,0 +1,9 @@
+{
+  "datasets": [
+    {
+      "name": "gushi_user_read_roles",
+      "queryRoles": "gushi_user,admin",
+      "mutationRoles": "admin"
+    }
+  ]
+}

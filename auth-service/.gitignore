@@ -1,0 +1,7 @@
+bin/
+.env
+*.exe
+
+# 本地启动脚本（可含密钥，勿提交）
+start.ps1
+start.sh

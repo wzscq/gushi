@@ -1,0 +1,138 @@
+<view class="container">
+  <view class="toolbar">
+    <view class="search-bar">
+      <input
+        class="search-input"
+        type="text"
+        confirm-type="search"
+        placeholder="搜索名称 / IP / 角色 / 备注"
+        value="{{keyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="onSearchConfirm"
+      />
+      <view class="search-clear" wx:if="{{hasKeyword}}" bindtap="onClearSearch">×</view>
+    </view>
+    <view class="filter-btn {{hasFilter ? 'active' : ''}}" bindtap="openFilter">
+      <text>筛选</text>
+      <view wx:if="{{hasFilter}}" class="filter-dot"></view>
+    </view>
+  </view>
+
+  <view class="meta-row" wx:if="{{hasKeyword || hasFilter}}">
+    <text class="meta-total">共 {{total}} 件</text>
+    <text wx:if="{{hasFilter}}" class="meta-clear" bindtap="clearFilter">清除筛选</text>
+  </view>
+
+  <view wx:if="{{loading}}" class="state text-muted">加载中…</view>
+
+  <view wx:elif="{{error}}" class="state">
+    <text class="text-error">{{error}}</text>
+    <button class="btn-primary retry" bindtap="loadItems">重试</button>
+  </view>
+
+  <view wx:elif="{{items.length === 0 && (hasKeyword || hasFilter)}}" class="empty">
+    <image class="empty-illust" src="/assets/empty-cabinet.png" mode="aspectFit" />
+    <text class="empty-title">未找到</text>
+    <text class="text-muted" wx:if="{{hasKeyword}}">没有匹配「{{keyword}}」的谷子</text>
+    <text class="text-muted" wx:else>没有符合筛选条件的谷子</text>
+    <button class="btn-primary empty-btn" bindtap="goCreate">去新增</button>
+    <button class="btn-clear-search" wx:if="{{hasKeyword}}" bindtap="onClearSearch">清空搜索</button>
+    <button class="btn-clear-search" wx:if="{{hasFilter}}" bindtap="clearFilter">清除筛选</button>
+  </view>
+
+  <view wx:elif="{{items.length === 0}}" class="empty">
+    <image class="empty-illust" src="/assets/empty-cabinet.png" mode="aspectFit" />
+    <text class="empty-title">柜子还是空的…</text>
+    <text class="text-muted">放进第一件谷子，开启你的收藏橱窗</text>
+    <button class="btn-primary empty-btn" bindtap="goCreate">添加第一件谷子</button>
+  </view>
+
+  <view wx:else class="grid">
+    <view
+      class="card"
+      wx:for="{{items}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="goDetail"
+    >
+      <view class="cover-wrap">
+        <image
+          wx:if="{{item.coverSrc}}"
+          class="cover"
+          src="{{item.coverSrc}}"
+          mode="aspectFill"
+        />
+        <view wx:else class="cover placeholder">
+          <text>{{item.initial}}</text>
+        </view>
+      </view>
+      <text class="name">{{item.name}}</text>
+    </view>
+  </view>
+
+  <view class="fab" bindtap="goCreate">+</view>
+
+  <!-- 筛选底部弹层 -->
+  <view class="sheet-mask" wx:if="{{filterOpen}}" bindtap="closeFilter"></view>
+  <view class="sheet {{filterOpen ? 'open' : ''}}">
+    <view class="sheet-header">
+      <text class="sheet-title">筛选</text>
+      <text class="sheet-close" bindtap="closeFilter">关闭</text>
+    </view>
+
+    <scroll-view scroll-y class="sheet-body">
+      <view class="sheet-section">
+        <view class="sheet-label">IP / 作品</view>
+        <input
+          class="sheet-input"
+          placeholder="如：原神"
+          value="{{draft.ip}}"
+          data-field="ip"
+          bindinput="onDraftInput"
+        />
+      </view>
+
+      <view class="sheet-section">
+        <view class="sheet-label">品类</view>
+        <view class="chips">
+          <view
+            class="chip {{item.selected ? 'selected' : ''}}"
+            wx:for="{{draftCategories}}"
+            wx:key="value"
+            data-value="{{item.value}}"
+            bindtap="toggleDraftCategory"
+          >{{item.label}}</view>
+        </view>
+      </view>
+
+      <view class="sheet-section">
+        <view class="sheet-label">状态</view>
+        <view class="chips">
+          <view
+            class="chip {{item.selected ? 'selected' : ''}}"
+            wx:for="{{draftStatuses}}"
+            wx:key="value"
+            data-value="{{item.value}}"
+            bindtap="toggleDraftStatus"
+          >{{item.label}}</view>
+        </view>
+      </view>
+
+      <view class="sheet-section">
+        <view class="sheet-label">标签</view>
+        <input
+          class="sheet-input"
+          placeholder="逗号分隔，如：限定,官谷"
+          value="{{draft.tagsText}}"
+          data-field="tagsText"
+          bindinput="onDraftInput"
+        />
+      </view>
+    </scroll-view>
+
+    <view class="sheet-footer">
+      <button class="sheet-btn reset" bindtap="resetDraft">重置</button>
+      <button class="sheet-btn confirm" bindtap="confirmFilter">确认</button>
+    </view>
+  </view>
+</view>

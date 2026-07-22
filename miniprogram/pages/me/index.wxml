@@ -1,0 +1,16 @@
+<view class="container">
+  <view class="profile-card">
+    <view class="avatar">{{user.nickname ? user.nickname[0] : '我'}}</view>
+    <view class="info">
+      <text class="nickname">{{user.nickname || '收藏家'}}</text>
+      <text class="uid">ID: {{user.id || '—'}}</text>
+    </view>
+  </view>
+
+  <view class="menu">
+    <view class="menu-item" bindtap="goSettings">
+      <text>设置</text>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+</view>

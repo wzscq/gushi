@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+# 谷子 Auth Service 启动脚本模板（Linux / macOS / WSL）
+#
+# 首次使用：复制本文件为 start.sh（start.sh 已在 .gitignore，不会提交）
+#   cp start.sh.example start.sh && chmod +x start.sh
+#
+# 用法：
+#   ./start.sh              # 默认 go run
+#   ./start.sh --binary     # 使用 bin/auth-server（需先 go build）
+#
+# 配置优先级（后者覆盖前者）：
+#   1. .env 文件
+#   2. 下方「环境变量配置」区块
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
+USE_BINARY=0
+if [[ "${1:-}" == "--binary" ]]; then
+  USE_BINARY=1
+fi
+
+load_dotenv() {
+  local file="$1"
+  [[ -f "$file" ]] || return 0
+
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    line="${line%$'\r'}"
+    line="$(echo "$line" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+    [[ -z "$line" || "$line" == \#* ]] && continue
+    if [[ "$line" =~ ^([^=]+)=(.*)$ ]]; then
+      key="${BASH_REMATCH[1]}"
+      key="$(echo "$key" | sed -e 's/[[:space:]]*$//')"
+      value="${BASH_REMATCH[2]}"
+      value="$(echo "$value" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+      value="${value%\"}"
+      value="${value#\"}"
+      value="${value%\'}"
+      value="${value#\'}"
+      export "$key=$value"
+    fi
+  done < "$file"
+}
+
+# ---------- 1. 从 .env 加载 ----------
+load_dotenv "$SCRIPT_DIR/.env"
+
+# ---------- 2. 环境变量配置（在此填写，会覆盖 .env 同名项） ----------
+# export AUTH_ADDR=":8081"
+
+# export WECHAT_APP_ID=""
+# export WECHAT_APP_SECRET=""
+
+# export AUTH_PASSWORD_SECRET=""
+
+# export CRV_BASE_URL="http://127.0.0.1:8080"
+# export CRV_APPID="gushi"
+
+# export CRV_PROVISIONER_TOKEN="int_xxxxxxxx"
+
+# export CRV_LOGIN_USERNAME_FIELD="id"
+# export DEFAULT_USER_ROLE="gushi_user"
+
+# ---------- 启动 ----------
+echo "[auth-service] AUTH_ADDR=${AUTH_ADDR:-:8081}"
+echo "[auth-service] CRV_BASE_URL=${CRV_BASE_URL:-http://127.0.0.1:8080}"
+if [[ -n "${CRV_PROVISIONER_TOKEN:-}" ]]; then
+  echo "[auth-service] CRV_PROVISIONER_TOKEN=(set)"
+else
+  echo "[auth-service] WARN: 未配置 CRV_PROVISIONER_TOKEN"
+fi
+
+BINARY="$SCRIPT_DIR/bin/auth-server"
+if [[ "$USE_BINARY" -eq 1 && -x "$BINARY" ]]; then
+  echo "[auth-service] starting $BINARY"
+  exec "$BINARY"
+fi
+
+if [[ "$USE_BINARY" -eq 1 ]]; then
+  echo "[auth-service] binary not found, fallback to go run"
+fi
+
+echo "[auth-service] starting go run ./cmd/server"
+exec go run ./cmd/server

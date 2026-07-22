@@ -1,0 +1,8 @@
+<view class="container">
+  <view class="section about">
+    <text class="label">关于</text>
+    <text class="desc">谷子私库 · 软萌橱窗里的收藏日常</text>
+  </view>
+
+  <button class="logout-btn" bindtap="handleLogout">退出登录</button>
+</view>

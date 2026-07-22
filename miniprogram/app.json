@@ -1,0 +1,45 @@
+{
+  "pages": [
+    "pages/login/index",
+    "pages/library/index",
+    "pages/item/detail",
+    "pages/item/form",
+    "pages/stats/index",
+    "pages/me/index",
+    "pages/me/settings"
+  ],
+  "window": {
+    "navigationBarTitleText": "谷子私库",
+    "navigationBarBackgroundColor": "#FFF8FA",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F7F4FF"
+  },
+  "tabBar": {
+    "color": "#8B8794",
+    "selectedColor": "#E85A7A",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/library/index",
+        "text": "私库",
+        "iconPath": "assets/icons/tab-library.png",
+        "selectedIconPath": "assets/icons/tab-library-active.png"
+      },
+      {
+        "pagePath": "pages/stats/index",
+        "text": "统计",
+        "iconPath": "assets/icons/tab-stats.png",
+        "selectedIconPath": "assets/icons/tab-stats-active.png"
+      },
+      {
+        "pagePath": "pages/me/index",
+        "text": "我的",
+        "iconPath": "assets/icons/tab-me.png",
+        "selectedIconPath": "assets/icons/tab-me-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

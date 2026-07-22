@@ -1,0 +1,108 @@
+<view class="detail-page">
+  <view wx:if="{{loading}}" class="state text-muted">加载中…</view>
+
+  <view wx:elif="{{error}}" class="state">
+    <text class="text-error">{{error}}</text>
+    <button class="btn-primary retry" bindtap="reload">重试</button>
+  </view>
+
+  <block wx:else>
+    <view class="gallery">
+      <swiper
+        wx:if="{{photos.length}}"
+        class="swiper"
+        indicator-dots="{{photos.length > 1}}"
+        circular="{{photos.length > 1}}"
+        bindchange="onSwiperChange"
+      >
+        <swiper-item wx:for="{{photos}}" wx:key="attachId">
+          <image
+            class="slide"
+            src="{{item.src}}"
+            mode="aspectFit"
+            data-index="{{index}}"
+            bindtap="previewPhoto"
+          />
+        </swiper-item>
+      </swiper>
+      <view wx:else class="gallery-empty">
+        <text>{{initial}}</text>
+      </view>
+      <view wx:if="{{photos.length > 1}}" class="gallery-count">
+        {{current + 1}} / {{photos.length}}
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="title">{{item.name}}</view>
+      <view class="meta" wx:if="{{item.ip || item.character_name}}">
+        <text wx:if="{{item.ip}}">{{item.ip}}</text>
+        <text wx:if="{{item.ip && item.character_name}}"> · </text>
+        <text wx:if="{{item.character_name}}">{{item.character_name}}</text>
+      </view>
+      <view class="chips">
+        <text class="chip">{{item.categoryLabel}}</text>
+        <text class="chip">{{item.versionTypeLabel}}</text>
+        <text class="chip chip-status">{{item.statusLabel}}</text>
+      </view>
+    </view>
+
+    <view class="section" wx:if="{{item.circle || item.author}}">
+      <view class="section-title">同人</view>
+      <view class="row" wx:if="{{item.circle}}">
+        <text class="label">社团</text>
+        <text class="value">{{item.circle}}</text>
+      </view>
+      <view class="row" wx:if="{{item.author}}">
+        <text class="label">作者</text>
+        <text class="value">{{item.author}}</text>
+      </view>
+    </view>
+
+    <view
+      class="section section-muted"
+      wx:if="{{item.purchase_price || item.purchase_date || item.purchase_source || item.order_no}}"
+    >
+      <view class="section-title">交易</view>
+      <view class="row" wx:if="{{item.purchase_price}}">
+        <text class="label">购入价</text>
+        <text class="value">¥{{item.purchase_price}}</text>
+      </view>
+      <view class="row" wx:if="{{item.purchase_date}}">
+        <text class="label">购入日期</text>
+        <text class="value">{{item.purchase_date}}</text>
+      </view>
+      <view class="row" wx:if="{{item.purchase_source}}">
+        <text class="label">渠道</text>
+        <text class="value">{{item.purchase_source}}</text>
+      </view>
+      <view class="row" wx:if="{{item.order_no}}">
+        <text class="label">订单号</text>
+        <text class="value">{{item.order_no}}</text>
+      </view>
+    </view>
+
+    <view class="section" wx:if="{{item.location || item.tags.length || item.note}}">
+      <view class="section-title">整理</view>
+      <view class="row" wx:if="{{item.location}}">
+        <text class="label">存放</text>
+        <text class="value">{{item.location}}</text>
+      </view>
+      <view class="row tags-row" wx:if="{{item.tags.length}}">
+        <text class="label">标签</text>
+        <view class="tags">
+          <text class="tag" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+        </view>
+      </view>
+      <view class="note" wx:if="{{item.note}}">
+        <text class="label">备注</text>
+        <text class="note-text">{{item.note}}</text>
+      </view>
+    </view>
+
+    <view class="actions">
+      <button class="btn-edit" bindtap="goEdit">编辑</button>
+      <button class="btn-delete" bindtap="handleDelete">删除</button>
+    </view>
+  </block>
+</view>

@@ -1,0 +1,61 @@
+page {
+  --bg0: #f7f4ff;
+  --bg1: #fff6f8;
+  --accent: #e85a7a;
+  --accent-soft: rgba(232, 90, 122, 0.12);
+  --mint: #5cb8a8;
+  --mint-soft: rgba(92, 184, 168, 0.14);
+  --text: #2c2a32;
+  --muted: #8b8794;
+  --card: #ffffff;
+  --card-border: rgba(232, 90, 122, 0.12);
+  --danger: #e85a7a;
+
+  background: linear-gradient(165deg, var(--bg0) 0%, var(--bg1) 55%, #fff9f5 100%);
+  background-attachment: fixed;
+  color: var(--text);
+  font-size: 28rpx;
+  box-sizing: border-box;
+  min-height: 100%;
+}
+
+.container {
+  min-height: 100vh;
+  padding: 32rpx;
+  box-sizing: border-box;
+}
+
+.btn-primary {
+  background-color: var(--accent);
+  color: #ffffff;
+  border-radius: 24rpx;
+  font-size: 32rpx;
+  line-height: 88rpx;
+  text-align: center;
+  border: none;
+}
+
+.btn-primary::after {
+  border: none;
+}
+
+.btn-primary[disabled] {
+  opacity: 0.55;
+}
+
+.text-muted {
+  color: var(--muted);
+  font-size: 24rpx;
+}
+
+.text-error {
+  color: var(--danger);
+  font-size: 26rpx;
+}
+
+.card-panel {
+  background: var(--card);
+  border-radius: 24rpx;
+  border: 1rpx solid var(--card-border);
+  box-shadow: 0 8rpx 24rpx rgba(44, 42, 50, 0.04);
+}

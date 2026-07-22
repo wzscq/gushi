@@ -1,0 +1,30 @@
+{
+  "model": "core_user",
+  "modelID": "core_user",
+  "table": "core_user",
+  "fields": [
+    { "field": "id", "name": "用户ID", "dataType": "varchar" },
+    { "field": "version", "name": "数据版本", "dataType": "int" },
+    { "field": "openid", "name": "微信OpenID", "dataType": "varchar" },
+    { "field": "union_id", "name": "微信UnionID", "dataType": "varchar" },
+    { "field": "nickname", "name": "昵称", "dataType": "varchar", "quickSearch": true },
+    { "field": "user_name_zh", "name": "中文名称", "dataType": "varchar", "quickSearch": true },
+    { "field": "user_name_en", "name": "英文名称", "dataType": "varchar", "quickSearch": true },
+    { "field": "password", "name": "密码", "dataType": "password" },
+    { "field": "avatar_url", "name": "头像URL", "dataType": "varchar" },
+    { "field": "default_view", "name": "默认视图", "dataType": "varchar" },
+    { "field": "hide_amount", "name": "隐藏金额", "dataType": "int" },
+    { "field": "status", "name": "状态", "dataType": "int" },
+    {
+      "field": "roles",
+      "name": "用户角色",
+      "fieldType": "many2many",
+      "relatedModelID": "core_role",
+      "associationModelID": "core_role_core_user"
+    },
+    { "field": "create_user", "name": "创建人", "dataType": "varchar" },
+    { "field": "create_time", "name": "创建时间", "dataType": "datetime" },
+    { "field": "update_user", "name": "更新人", "dataType": "varchar" },
+    { "field": "update_time", "name": "更新时间", "dataType": "datetime" }
+  ]
+}

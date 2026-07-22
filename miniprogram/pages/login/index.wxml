@@ -1,0 +1,39 @@
+<view class="login-page">
+  <view class="decor decor-a"></view>
+  <view class="decor decor-b"></view>
+
+  <view class="hero">
+    <image class="logo-img" src="/assets/brand-logo.png" mode="aspectFill" />
+    <text class="title">谷子私库</text>
+    <text class="subtitle">我的谷子收藏柜</text>
+  </view>
+
+  <view class="profile" wx:if="{{false}}">
+    <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+      <image class="avatar" src="{{avatarUrl || '/assets/default-avatar.png'}}" mode="aspectFill" />
+    </button>
+    <input
+      class="nickname-input"
+      type="nickname"
+      placeholder="昵称（可选）"
+      value="{{nickname}}"
+      bindinput="onNicknameInput"
+    />
+  </view>
+
+  <view class="actions">
+    <button
+      class="login-btn"
+      loading="{{loading}}"
+      disabled="{{loading}}"
+      bindtap="handleLogin"
+    >
+      微信一键登录
+    </button>
+    <text class="error" wx:if="{{error}}">{{error}}</text>
+  </view>
+
+  <view class="footer">
+    <text class="privacy">数据仅本人可见，用于管理你的谷子收藏</text>
+  </view>
+</view>

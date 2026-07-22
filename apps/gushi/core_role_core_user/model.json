@@ -1,0 +1,27 @@
+{
+  "model": "core_role_core_user",
+  "modelID": "core_role_core_user",
+  "table": "core_role_core_user",
+  "fields": [
+    { "field": "id", "name": "ID", "dataType": "int" },
+    { "field": "version", "name": "数据版本", "dataType": "int" },
+    {
+      "field": "core_user_id",
+      "name": "用户",
+      "dataType": "varchar",
+      "fieldType": "many2one",
+      "relatedModelID": "core_user"
+    },
+    {
+      "field": "core_role_id",
+      "name": "角色",
+      "dataType": "varchar",
+      "fieldType": "many2one",
+      "relatedModelID": "core_role"
+    },
+    { "field": "create_user", "name": "创建人", "dataType": "varchar" },
+    { "field": "create_time", "name": "创建时间", "dataType": "datetime" },
+    { "field": "update_user", "name": "更新人", "dataType": "varchar" },
+    { "field": "update_time", "name": "更新时间", "dataType": "datetime" }
+  ]
+}

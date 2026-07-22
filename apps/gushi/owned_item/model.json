@@ -1,0 +1,34 @@
+{
+  "model": "owned_item",
+  "modelID": "owned_item",
+  "table": "owned_item",
+  "fields": [
+    { "field": "id", "name": "ID", "dataType": "int" },
+    { "field": "version", "name": "数据版本", "dataType": "int" },
+    { "field": "name", "name": "名称", "dataType": "varchar", "quickSearch": true },
+    { "field": "ip", "name": "IP/作品", "dataType": "varchar", "quickSearch": true },
+    { "field": "character_name", "name": "角色", "dataType": "varchar", "quickSearch": true },
+    { "field": "category", "name": "品类", "dataType": "varchar" },
+    { "field": "version_type", "name": "版本类型", "dataType": "varchar" },
+    { "field": "circle", "name": "社团", "dataType": "varchar", "quickSearch": true },
+    { "field": "author", "name": "作者", "dataType": "varchar", "quickSearch": true },
+    { "field": "status", "name": "状态", "dataType": "varchar" },
+    { "field": "location", "name": "存放位置", "dataType": "varchar" },
+    { "field": "tags", "name": "标签", "dataType": "varchar", "quickSearch": true },
+    { "field": "purchase_price", "name": "购入价", "dataType": "decimal" },
+    { "field": "purchase_date", "name": "购入日期", "dataType": "datetime" },
+    { "field": "purchase_source", "name": "购入渠道", "dataType": "varchar" },
+    { "field": "order_no", "name": "订单号", "dataType": "varchar" },
+    { "field": "note", "name": "备注", "dataType": "varchar", "quickSearch": true },
+    {
+      "field": "photos",
+      "name": "图片",
+      "fieldType": "file",
+      "relatedModelID": "owned_item_attach"
+    },
+    { "field": "create_user", "name": "创建人", "dataType": "varchar" },
+    { "field": "create_time", "name": "创建时间", "dataType": "datetime" },
+    { "field": "update_user", "name": "更新人", "dataType": "varchar" },
+    { "field": "update_time", "name": "更新时间", "dataType": "datetime" }
+  ]
+}

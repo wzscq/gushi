@@ -1,0 +1,68 @@
+.profile-card {
+  display: flex;
+  align-items: center;
+  background: var(--card);
+  border-radius: 28rpx;
+  padding: 36rpx 32rpx;
+  margin-bottom: 32rpx;
+  border: 1rpx solid var(--card-border);
+  box-shadow: 0 10rpx 28rpx rgba(232, 90, 122, 0.08);
+  background-image: linear-gradient(135deg, #fff 0%, #fff6f8 100%);
+}
+
+.avatar {
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: 28rpx;
+  background: linear-gradient(145deg, #e85a7a 0%, #f08aa0 100%);
+  color: #ffffff;
+  font-size: 42rpx;
+  font-weight: 600;
+  line-height: 104rpx;
+  text-align: center;
+  margin-right: 28rpx;
+  box-shadow: 0 8rpx 20rpx rgba(232, 90, 122, 0.28);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.nickname {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.uid {
+  font-size: 24rpx;
+  color: var(--muted);
+}
+
+.menu {
+  background: var(--card);
+  border-radius: 24rpx;
+  overflow: hidden;
+  border: 1rpx solid var(--card-border);
+}
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 34rpx 32rpx;
+  border-bottom: 1rpx solid #f3eef2;
+  color: var(--text);
+  font-size: 30rpx;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.arrow {
+  color: #d0ccd6;
+  font-size: 36rpx;
+}

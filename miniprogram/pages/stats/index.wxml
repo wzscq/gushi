@@ -1,0 +1,5 @@
+<view class="container placeholder">
+  <image class="illust" src="/assets/empty-cabinet.png" mode="aspectFit" />
+  <text class="title">统计概览</text>
+  <text class="text-muted">橱窗数据整理中，更多统计即将上线</text>
+</view>
