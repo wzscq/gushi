@@ -27,3 +27,7 @@ miniprogram/node_modules/
 
 # Go
 **/vendor/
+
+# Build release artifacts (versioned binaries under build/release/<ver>/)
+build/release/**
+!build/release/.gitignore
