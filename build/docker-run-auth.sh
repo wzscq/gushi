@@ -8,9 +8,11 @@
 #   ./build/docker-run-auth.sh 1.0.0 ./auth-service.env
 #   ./build/docker-run-auth.sh 1.0.0 ./auth-service.env gushi-auth
 #
+# 默认 env：当前工作目录下的 auth-service.env（不是仓库根目录）
+#
 # 前置：
 #   ./build/docker-build-auth.sh <version>
-#   准备好含密钥的 env 文件（可参考 build/auth-service.env.example）
+#   在执行目录准备 auth-service.env（可参考 build/auth-service.env.example）
 #
 # 注意：容器内访问宿主机 CRV 时，CRV_BASE_URL 不要用 127.0.0.1，
 #       可改为宿主机局域网 IP，或 host.docker.internal（视 Docker 网络而定）。
@@ -30,18 +32,19 @@ if [[ -z "$VERSION" ]]; then
 fi
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+# 默认在「执行时的当前工作目录」查找 auth-service.env
 if [[ -z "$ENV_FILE" ]]; then
-  ENV_FILE="$ROOT/auth-service.env"
+  ENV_FILE="$(pwd)/auth-service.env"
 fi
 
-# 相对路径转为绝对路径，便于 docker --env-file
+# 相对路径基于当前工作目录解析，便于 docker --env-file
 if [[ "$ENV_FILE" != /* ]]; then
-  ENV_FILE="$ROOT/$ENV_FILE"
+  ENV_FILE="$(pwd)/$ENV_FILE"
 fi
 
 if [[ ! -f "$ENV_FILE" ]]; then
   echo "error: env file not found: $ENV_FILE" >&2
-  echo "copy build/auth-service.env.example to auth-service.env and fill secrets" >&2
+  echo "place auth-service.env in the current directory (see build/auth-service.env.example)" >&2
   exit 1
 fi
 
