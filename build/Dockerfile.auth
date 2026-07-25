@@ -1,0 +1,25 @@
+# 使用预编译二进制打包 Auth Service（不在镜像内 go build）
+# 构建前：./build/build-auth.sh <version>
+# 构建：  ./build/docker-build-auth.sh <version>
+#
+# 构建上下文应为仓库根目录：
+#   docker build -f build/Dockerfile.auth --build-arg VERSION=1.0.0 .
+
+ARG VERSION
+FROM alpine:3.20
+
+RUN apk add --no-cache ca-certificates tzdata \
+  && adduser -D -H -u 10001 appuser
+
+WORKDIR /app
+
+ARG VERSION
+COPY build/release/${VERSION}/auth-server /app/auth-server
+
+RUN chmod +x /app/auth-server
+
+USER appuser
+EXPOSE 8081
+ENV AUTH_ADDR=:8081
+
+ENTRYPOINT ["/app/auth-server"]
