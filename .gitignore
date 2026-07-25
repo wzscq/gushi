@@ -8,6 +8,7 @@ Thumbs.db
 
 # Auth service secrets & local runtime
 auth-service/.env
+auth-service.env
 auth-service/start.ps1
 auth-service/start.sh
 auth-service/bin/
