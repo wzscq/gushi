@@ -34,7 +34,10 @@
     </view>
 
     <view class="section">
-      <view class="title">{{item.name}}</view>
+      <view class="title-row">
+        <view class="title">{{item.name}}</view>
+        <text class="update-time" wx:if="{{item.updateTime}}">{{item.updateTime}}</text>
+      </view>
       <view class="meta" wx:if="{{item.ip || item.character_name}}">
         <text wx:if="{{item.ip}}">{{item.ip}}</text>
         <text wx:if="{{item.ip && item.character_name}}"> · </text>

@@ -60,6 +60,21 @@ function toggleValue(list, value) {
   return next;
 }
 
+/** 列表展示用：取 update_time 为「YYYY-MM-DD HH:mm」 */
+function formatUpdateTime(value) {
+  if (!value) {
+    return '';
+  }
+  const s = String(value).replace('T', ' ');
+  if (s.length >= 16) {
+    return s.slice(0, 16);
+  }
+  if (s.length >= 10) {
+    return s.slice(0, 10);
+  }
+  return s;
+}
+
 Page({
   data: {
     loading: true,
@@ -254,6 +269,7 @@ Page({
           id: row.id,
           name,
           initial: name.charAt(0) || '谷',
+          updateTime: formatUpdateTime(row.update_time),
           attachId,
           coverSrc: refresh ? '' : prevCover[row.id] || '',
         };

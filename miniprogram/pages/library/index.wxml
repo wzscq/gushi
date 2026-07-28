@@ -67,6 +67,7 @@
         </view>
       </view>
       <text class="name">{{item.name}}</text>
+      <text class="update-time" wx:if="{{item.updateTime}}">{{item.updateTime}}</text>
     </view>
   </view>
 
