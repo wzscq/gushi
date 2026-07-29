@@ -38,7 +38,9 @@
 .info {
   display: flex;
   flex-direction: column;
-  gap: 10rpx;
+  gap: 8rpx;
+  flex: 1;
+  min-width: 0;
 }
 
 .nickname {
@@ -76,4 +78,6 @@
 .arrow {
   color: #d0ccd6;
   font-size: 36rpx;
+  flex-shrink: 0;
+  margin-left: 12rpx;
 }

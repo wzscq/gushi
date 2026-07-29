@@ -1,5 +1,5 @@
 <view class="container">
-  <view class="profile-card">
+  <view class="profile-card" bindtap="goProfile">
     <image
       wx:if="{{avatarSrc}}"
       class="avatar-img"
@@ -12,6 +12,7 @@
       <text class="nickname">{{user.nickname || '收藏家'}}</text>
       <text class="uid">ID: {{user.id || '—'}}</text>
     </view>
+    <text class="arrow">›</text>
   </view>
 
   <view class="menu">

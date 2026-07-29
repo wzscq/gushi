@@ -6,6 +6,7 @@
     "pages/item/form",
     "pages/stats/index",
     "pages/me/index",
+    "pages/me/profile",
     "pages/me/settings"
   ],
   "window": {

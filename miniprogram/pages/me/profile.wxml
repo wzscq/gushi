@@ -1,0 +1,40 @@
+<view class="container profile-edit">
+  <view class="card">
+    <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+      <image
+        wx:if="{{avatarPreview}}"
+        class="avatar"
+        src="{{avatarPreview}}"
+        mode="aspectFill"
+      />
+      <view wx:else class="avatar avatar-placeholder">
+        <text>{{nickname ? nickname[0] : '+'}}</text>
+      </view>
+      <text class="avatar-hint">点击更换头像</text>
+    </button>
+
+    <view class="field">
+      <text class="label">昵称</text>
+      <input
+        class="nickname-input"
+        type="nickname"
+        placeholder="填写昵称（可选）"
+        value="{{nickname}}"
+        maxlength="32"
+        bindinput="onNicknameInput"
+        bindblur="onNicknameInput"
+        bindchange="onNicknameInput"
+      />
+    </view>
+  </view>
+
+  <button
+    class="save-btn"
+    loading="{{saving}}"
+    disabled="{{saving}}"
+    bindtap="handleSave"
+  >
+    保存
+  </button>
+  <text class="error" wx:if="{{error}}">{{error}}</text>
+</view>

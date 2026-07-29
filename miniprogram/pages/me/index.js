@@ -39,6 +39,10 @@ Page({
     this.setData({ avatarSrc: '' });
   },
 
+  goProfile() {
+    wx.navigateTo({ url: '/pages/me/profile' });
+  },
+
   goSettings() {
     wx.navigateTo({ url: '/pages/me/settings' });
   },

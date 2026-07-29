@@ -189,6 +189,66 @@ async function uploadAndSaveAvatar(localFilePath) {
 }
 
 /**
+ * 更新昵称（同步 user_name_zh，与 Auth 登录逻辑一致）。
+ */
+async function updateNickname(nickname) {
+  const row = await getSelf();
+  const nick = String(nickname || '').trim();
+  await crv.save({
+    modelId: env.USER_MODEL_ID,
+    list: [
+      {
+        _save_type: 'update',
+        id: row.id,
+        version: row.version,
+        nickname: nick,
+        user_name_zh: nick,
+      },
+    ],
+  });
+
+  const refreshed = await getSelf();
+  const nextUser = {
+    ...(auth.getUser() || {}),
+    id: refreshed.id,
+    nickname: refreshed.nickname != null ? refreshed.nickname : nick,
+    avatar_url: refreshed.avatar_url || (auth.getUser() || {}).avatar_url,
+    avatar_attach_id:
+      firstAttachId(refreshed[env.AVATAR_FIELD_ID]) ||
+      (auth.getUser() || {}).avatar_attach_id,
+  };
+  auth.setUser(nextUser);
+  return nextUser;
+}
+
+/**
+ * 保存资料：可选换头像 + 改昵称。
+ * @param {{ nickname?: string, localAvatarPath?: string }} payload
+ */
+async function saveProfile(payload = {}) {
+  const localAvatarPath = payload.localAvatarPath || '';
+  let next = auth.getUser();
+
+  if (localAvatarPath && isLocalFilePath(localAvatarPath)) {
+    next = await uploadAndSaveAvatar(localAvatarPath);
+  }
+
+  const nick = String(payload.nickname != null ? payload.nickname : (next && next.nickname) || '').trim();
+  const currentNick = String((next && next.nickname) || '').trim();
+  if (nick !== currentNick) {
+    next = await updateNickname(nick);
+  } else if (next) {
+    // 无昵称变更时也写回 session，保证字段完整
+    auth.setUser({
+      ...next,
+      nickname: currentNick,
+    });
+  }
+
+  return next || auth.getUser();
+}
+
+/**
  * 解析可展示的头像本地路径 / http URL。
  * @returns {Promise<string>}
  */
@@ -236,6 +296,8 @@ module.exports = {
   isLocalFilePath,
   getSelf,
   uploadAndSaveAvatar,
+  updateNickname,
+  saveProfile,
   loadAvatar,
   resolveAvatarSrc,
   firstAttachId,
