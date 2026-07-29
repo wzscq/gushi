@@ -61,7 +61,7 @@ func (s *Service) Login(ctx context.Context, in LoginInput) (*LoginResult, error
 
 	nickname := strings.TrimSpace(in.Nickname)
 	userNameZh := nickname
-	avatarURL := strings.TrimSpace(in.AvatarURL)
+	avatarURL := durableAvatarURL(in.AvatarURL)
 	internalPass := password.Derive(sess.OpenID, s.cfg.PasswordSecret)
 
 	existing, err := s.findUserByOpenID(ctx, sess.OpenID)
@@ -179,4 +179,21 @@ func (s *Service) loginUsername(userID string, existing *crv.CoreUser) (string, 
 	default:
 		return "", fmt.Errorf("unsupported CRV_LOGIN_USERNAME_FIELD: %s", s.cfg.LoginUsernameField)
 	}
+}
+
+// durableAvatarURL 过滤微信本地临时路径，避免写入 core_user.avatar_url。
+// 长期头像由小程序经 CRV upload 后写入 OSS path / http(s) URL。
+func durableAvatarURL(raw string) string {
+	s := strings.TrimSpace(raw)
+	if s == "" {
+		return ""
+	}
+	lower := strings.ToLower(s)
+	if strings.HasPrefix(lower, "wxfile://") || strings.HasPrefix(lower, "file://") {
+		return ""
+	}
+	if strings.Contains(lower, "://tmp") || strings.Contains(lower, "/tmp/") || strings.Contains(lower, `\tmp\`) {
+		return ""
+	}
+	return s
 }

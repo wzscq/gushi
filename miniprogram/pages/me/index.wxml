@@ -1,6 +1,13 @@
 <view class="container">
   <view class="profile-card">
-    <view class="avatar">{{user.nickname ? user.nickname[0] : '我'}}</view>
+    <image
+      wx:if="{{avatarSrc}}"
+      class="avatar-img"
+      src="{{avatarSrc}}"
+      mode="aspectFill"
+      binderror="onAvatarError"
+    />
+    <view wx:else class="avatar">{{user.nickname ? user.nickname[0] : '我'}}</view>
     <view class="info">
       <text class="nickname">{{user.nickname || '收藏家'}}</text>
       <text class="uid">ID: {{user.id || '—'}}</text>

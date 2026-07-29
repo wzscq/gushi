@@ -1,7 +1,10 @@
 const auth = require('../../services/auth');
 const itemService = require('../../services/item');
+const { formatLocalDateTime } = require('../../utils/datetime');
 
 const SEARCH_DEBOUNCE_MS = 300;
+/** 网格两列封面缩略图宽度（CRV download maxWidth） */
+const COVER_MAX_WIDTH = 240;
 
 function emptyApplied() {
   return {
@@ -58,21 +61,6 @@ function toggleValue(list, value) {
     next.push(value);
   }
   return next;
-}
-
-/** 列表展示用：取 update_time 为「YYYY-MM-DD HH:mm」 */
-function formatUpdateTime(value) {
-  if (!value) {
-    return '';
-  }
-  const s = String(value).replace('T', ' ');
-  if (s.length >= 16) {
-    return s.slice(0, 16);
-  }
-  if (s.length >= 10) {
-    return s.slice(0, 10);
-  }
-  return s;
 }
 
 Page({
@@ -269,7 +257,7 @@ Page({
           id: row.id,
           name,
           initial: name.charAt(0) || '谷',
-          updateTime: formatUpdateTime(row.update_time),
+          updateTime: formatLocalDateTime(row.update_time),
           attachId,
           coverSrc: refresh ? '' : prevCover[row.id] || '',
         };
@@ -311,7 +299,7 @@ Page({
         const coverSrc = await itemService.loadCover(
           item.id,
           item.attachId,
-          400,
+          COVER_MAX_WIDTH,
           { force }
         );
         if (!coverSrc || gen !== this._loadGen) {

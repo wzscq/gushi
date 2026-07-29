@@ -31,6 +31,14 @@ function getUser() {
   return wx.getStorageSync(STORAGE.USER) || null;
 }
 
+function setUser(user) {
+  wx.setStorageSync(STORAGE.USER, user || null);
+  const app = getApp();
+  if (app) {
+    app.globalData.user = user || null;
+  }
+}
+
 function isLoggedIn() {
   return !!getToken();
 }
@@ -108,6 +116,7 @@ module.exports = {
   STORAGE,
   getToken,
   getUser,
+  setUser,
   isLoggedIn,
   ensureLogin,
   goLogin,

@@ -5,7 +5,7 @@
 --   - schema / 租户：gushi（CRV X-Schema）
 --   - 用户：core_user.id = Session sub = owned_item.create_user
 --   - 主表：owned_item.id = BIGINT AUTO_INCREMENT
---   - 附件：owned_item_attach（CRV file 虚拟字段 photos，表名由 crvframe 自动生成）
+--   - 附件：owned_item_attach（photos）、core_user_attach（avatar）；表名约定 {modelId}_attach
 --   - 标签：owned_item.tags 主表文本（`,tag1,tag2,` 分隔，便于 CRV Op.like 筛选）
 --   - 用户角色：core_user.roles（many2many）→ core_role_core_user → core_role
 --
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS core_user (
   user_name_zh  VARCHAR(64)   NOT NULL DEFAULT '' COMMENT '中文名称',
   user_name_en  VARCHAR(64)   NOT NULL DEFAULT '' COMMENT '英文名称',
   password      VARCHAR(128)  NOT NULL DEFAULT '' COMMENT '密码（哈希，微信登录可为空）',
-  avatar_url    VARCHAR(512)  NOT NULL DEFAULT '' COMMENT '头像 URL',
+  avatar_url    VARCHAR(512)  NOT NULL DEFAULT '' COMMENT '头像 URL/OSS path；展示优先走 avatar 文件附件 download',
 
   default_view  VARCHAR(16)   NOT NULL DEFAULT 'grid' COMMENT '默认视图：grid|list',
   hide_amount   TINYINT(1)    NOT NULL DEFAULT 0 COMMENT '统计页是否隐藏金额',
@@ -45,6 +45,39 @@ CREATE TABLE IF NOT EXISTS core_user (
   KEY idx_core_user_union_id (union_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   COMMENT='谷子用户';
+
+-- ---------------------------------------------------------------------------
+-- core_user_attach（用户头像附件，CRV file 虚拟字段 avatar）
+-- 表名约定 {modelId}_attach；row_id 类型与 core_user.id（VARCHAR）一致
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS core_user_attach (
+  id           BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'attach 主键，download 参数 attachId',
+  version      INT UNSIGNED    NOT NULL DEFAULT 0 COMMENT '乐观锁',
+
+  model_id     VARCHAR(64)     NOT NULL DEFAULT 'core_user' COMMENT '主表 modelId',
+  field_id     VARCHAR(64)     NOT NULL DEFAULT 'avatar' COMMENT 'file 虚拟字段名',
+  row_id       VARCHAR(64)     NOT NULL COMMENT '主表 core_user.id',
+
+  path         VARCHAR(512)    NOT NULL COMMENT 'OSS 对象键',
+  name         VARCHAR(255)    NOT NULL DEFAULT '' COMMENT '原始文件名',
+  ext          VARCHAR(16)     NOT NULL DEFAULT '' COMMENT '扩展名，含.',
+
+  sort_order   INT             NOT NULL DEFAULT 0 COMMENT '同用户多头像排序（通常仅 1 张）',
+
+  create_user  VARCHAR(64)     NOT NULL DEFAULT '',
+  create_time  DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  update_user  VARCHAR(64)     NOT NULL DEFAULT '',
+  update_time  DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+
+  PRIMARY KEY (id),
+  KEY idx_core_user_attach_row (model_id, field_id, row_id, sort_order),
+  KEY idx_core_user_attach_path (path(191)),
+
+  CONSTRAINT fk_core_user_attach_row
+    FOREIGN KEY (row_id) REFERENCES core_user (id)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  COMMENT='用户头像附件（avatar）';
 
 -- ---------------------------------------------------------------------------
 -- core_role（用户角色）

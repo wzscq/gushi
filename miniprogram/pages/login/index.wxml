@@ -3,21 +3,31 @@
   <view class="decor decor-b"></view>
 
   <view class="hero">
-    <image class="logo-img" src="/assets/brand-logo.png" mode="aspectFill" />
     <text class="title">谷子私库</text>
     <text class="subtitle">我的谷子收藏柜</text>
   </view>
 
-  <view class="profile" wx:if="{{false}}">
+  <view class="profile">
     <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
-      <image class="avatar" src="{{avatarUrl || '/assets/default-avatar.png'}}" mode="aspectFill" />
+      <image
+        wx:if="{{avatarUrl}}"
+        class="avatar"
+        src="{{avatarUrl}}"
+        mode="aspectFill"
+      />
+      <view wx:else class="avatar avatar-placeholder">
+        <text>+</text>
+      </view>
+      <text class="avatar-hint">选择头像</text>
     </button>
     <input
       class="nickname-input"
       type="nickname"
-      placeholder="昵称（可选）"
+      placeholder="微信昵称（可选）"
       value="{{nickname}}"
       bindinput="onNicknameInput"
+      bindblur="onNicknameInput"
+      bindchange="onNicknameInput"
     />
   </view>
 

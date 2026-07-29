@@ -1,5 +1,6 @@
 const auth = require('../../services/auth');
 const itemService = require('../../services/item');
+const { formatLocalDateTime } = require('../../utils/datetime');
 
 function formatDate(value) {
   if (!value) {
@@ -7,21 +8,6 @@ function formatDate(value) {
   }
   const s = String(value);
   return s.length >= 10 ? s.slice(0, 10) : s;
-}
-
-/** 展示用：取 update_time 为「YYYY-MM-DD HH:mm」 */
-function formatUpdateTime(value) {
-  if (!value) {
-    return '';
-  }
-  const s = String(value).replace('T', ' ');
-  if (s.length >= 16) {
-    return s.slice(0, 16);
-  }
-  if (s.length >= 10) {
-    return s.slice(0, 10);
-  }
-  return s;
 }
 
 function formatPrice(value) {
@@ -95,7 +81,7 @@ Page({
         purchase_source: row.purchase_source || '',
         order_no: row.order_no || '',
         note: row.note || '',
-        updateTime: formatUpdateTime(row.update_time),
+        updateTime: formatLocalDateTime(row.update_time),
       };
 
       const ids = itemService.attachIds(row.photos);

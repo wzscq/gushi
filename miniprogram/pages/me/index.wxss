@@ -22,6 +22,17 @@
   text-align: center;
   margin-right: 28rpx;
   box-shadow: 0 8rpx 20rpx rgba(232, 90, 122, 0.28);
+  flex-shrink: 0;
+}
+
+.avatar-img {
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: 28rpx;
+  margin-right: 28rpx;
+  flex-shrink: 0;
+  background: #f3eef2;
+  box-shadow: 0 8rpx 20rpx rgba(232, 90, 122, 0.18);
 }
 
 .info {

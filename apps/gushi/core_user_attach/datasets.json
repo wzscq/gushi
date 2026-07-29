@@ -1,0 +1,17 @@
+{
+  "datasets": [
+    {
+      "name": "gushi_user_own_avatar",
+      "queryRoles": "gushi_user",
+      "mutationRoles": "gushi_user",
+      "Filter": {
+        "row_id": { "Op.eq": "%{CURRENT_USER_ID}" }
+      }
+    },
+    {
+      "name": "admin_all_user_avatars",
+      "queryRoles": "admin",
+      "mutationRoles": "admin"
+    }
+  ]
+}
