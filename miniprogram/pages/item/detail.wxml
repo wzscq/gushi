@@ -103,7 +103,26 @@
       </view>
     </view>
 
+    <view class="section" wx:if="{{listings.length}}">
+      <view class="section-title">出售记录</view>
+      <view
+        class="listing-row"
+        wx:for="{{listings}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="goListing"
+      >
+        <view class="listing-main">
+          <text class="listing-title">{{item.title}}</text>
+          <text class="listing-meta">{{item.statusLabel}} · {{item.listedAtText}}</text>
+        </view>
+        <text class="listing-price">¥{{item.priceText}}</text>
+        <text class="listing-arrow">›</text>
+      </view>
+    </view>
+
     <view class="actions">
+      <button class="btn-sell" bindtap="goSell">出售</button>
       <button class="btn-edit" bindtap="goEdit">编辑</button>
       <button class="btn-delete" bindtap="handleDelete">删除</button>
     </view>

@@ -4,7 +4,9 @@
     "pages/library/index",
     "pages/item/detail",
     "pages/item/form",
-    "pages/stats/index",
+    "pages/market/index",
+    "pages/market/detail",
+    "pages/market/form",
     "pages/me/index",
     "pages/me/profile",
     "pages/me/settings"
@@ -28,8 +30,8 @@
         "selectedIconPath": "assets/icons/tab-library-active.png"
       },
       {
-        "pagePath": "pages/stats/index",
-        "text": "统计",
+        "pagePath": "pages/market/index",
+        "text": "市场",
         "iconPath": "assets/icons/tab-stats.png",
         "selectedIconPath": "assets/icons/tab-stats-active.png"
       },

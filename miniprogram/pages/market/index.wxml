@@ -1,0 +1,71 @@
+<view class="container">
+  <view class="tabs">
+    <view
+      class="tab {{tab === 'browse' ? 'active' : ''}}"
+      data-tab="browse"
+      bindtap="onSwitchTab"
+    >逛市场</view>
+    <view
+      class="tab {{tab === 'mine' ? 'active' : ''}}"
+      data-tab="mine"
+      bindtap="onSwitchTab"
+    >我的橱窗</view>
+  </view>
+
+  <view class="toolbar" wx:if="{{tab === 'browse'}}">
+    <view class="search-bar">
+      <input
+        class="search-input"
+        type="text"
+        confirm-type="search"
+        placeholder="搜索标题 / 说明"
+        value="{{keyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="onSearchConfirm"
+      />
+      <view class="search-clear" wx:if="{{hasKeyword}}" bindtap="onClearSearch">×</view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="state text-muted">加载中…</view>
+
+  <view wx:elif="{{error}}" class="state">
+    <text class="text-error">{{error}}</text>
+    <button class="btn-primary retry" bindtap="reload">重试</button>
+  </view>
+
+  <view wx:elif="{{items.length === 0}}" class="empty">
+    <image class="empty-illust" src="/assets/empty-cabinet.png" mode="aspectFit" />
+    <text class="empty-title" wx:if="{{tab === 'browse'}}">还没有在售</text>
+    <text class="empty-title" wx:else>橱窗还是空的</text>
+    <text class="text-muted" wx:if="{{tab === 'browse'}}">在私库详情中点击「出售」即可挂出</text>
+    <text class="text-muted" wx:else>在私库详情中点击「出售」后会出现在这里</text>
+  </view>
+
+  <view wx:else class="grid">
+    <view
+      class="card"
+      wx:for="{{items}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="goDetail"
+    >
+      <view class="cover-wrap">
+        <image
+          wx:if="{{item.coverSrc}}"
+          class="cover"
+          src="{{item.coverSrc}}"
+          mode="aspectFill"
+        />
+        <view wx:else class="cover placeholder">
+          <text>{{item.initial}}</text>
+        </view>
+        <view wx:if="{{item.status === 'delisted'}}" class="badge">已下架</view>
+      </view>
+      <text class="name">{{item.title}}</text>
+      <text class="price">¥{{item.priceText}}</text>
+      <text class="meta" wx:if="{{tab === 'browse' && item.sellerName}}">{{item.sellerName}}</text>
+      <text class="meta" wx:elif="{{item.listedAtText}}">{{item.listedAtText}}</text>
+    </view>
+  </view>
+</view>

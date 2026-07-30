@@ -1,5 +1,6 @@
 const auth = require('../../services/auth');
 const itemService = require('../../services/item');
+const marketService = require('../../services/market');
 const { formatLocalDateTime } = require('../../utils/datetime');
 
 function formatDate(value) {
@@ -30,6 +31,7 @@ Page({
     initial: '谷',
     photos: [],
     current: 0,
+    listings: [],
   },
 
   onLoad(query) {
@@ -46,10 +48,11 @@ Page({
   },
 
   onShow() {
-    // 从编辑页返回时刷新
     if (this.data.id && !this.data.loading && this._needRefresh) {
       this._needRefresh = false;
       this.loadDetail();
+    } else if (this.data.id && !this.data.loading) {
+      this.loadListings(this.data.id);
     }
   },
 
@@ -98,13 +101,31 @@ Page({
       });
       wx.setNavigationBarTitle({ title: name });
       this.loadPhotos(id, ids);
+      this.loadListings(id);
     } catch (err) {
       this.setData({
         loading: false,
         error: err.message || '加载失败',
         item: null,
         photos: [],
+        listings: [],
       });
+    }
+  },
+
+  async loadListings(ownedItemId) {
+    try {
+      const rows = await marketService.listByOwnedItemId(ownedItemId);
+      const listings = (rows || []).map((row) => ({
+        id: row.id,
+        title: row.title || '未命名',
+        priceText: marketService.formatPrice(row.sell_price),
+        statusLabel: marketService.listingStatusLabel(row.status),
+        listedAtText: formatLocalDateTime(row.listed_at || row.create_time),
+      }));
+      this.setData({ listings });
+    } catch (e) {
+      this.setData({ listings: [] });
     }
   },
 
@@ -147,6 +168,28 @@ Page({
     this._needRefresh = true;
     wx.navigateTo({
       url: `/pages/item/form?mode=edit&id=${encodeURIComponent(id)}`,
+    });
+  },
+
+  goSell() {
+    const id = this.data.id;
+    if (!id) {
+      return;
+    }
+    this._needRefresh = true;
+    wx.navigateTo({
+      url: `/pages/market/form?itemId=${encodeURIComponent(id)}`,
+    });
+  },
+
+  goListing(e) {
+    const id = e.currentTarget.dataset.id;
+    if (!id) {
+      return;
+    }
+    this._needRefresh = true;
+    wx.navigateTo({
+      url: `/pages/market/detail?id=${encodeURIComponent(id)}`,
     });
   },
 

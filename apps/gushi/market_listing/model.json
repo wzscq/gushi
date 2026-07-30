@@ -1,0 +1,32 @@
+{
+  "model": "market_listing",
+  "modelID": "market_listing",
+  "table": "market_listing",
+  "fields": [
+    { "field": "id", "name": "ID", "dataType": "int" },
+    { "field": "version", "name": "数据版本", "dataType": "int" },
+    { "field": "title", "name": "标题", "dataType": "varchar", "quickSearch": true },
+    { "field": "category", "name": "品类", "dataType": "varchar" },
+    { "field": "sell_price", "name": "售价", "dataType": "decimal" },
+    { "field": "status", "name": "状态", "dataType": "varchar" },
+    { "field": "listed_at", "name": "上架时间", "dataType": "datetime" },
+    { "field": "note", "name": "出售说明", "dataType": "varchar", "quickSearch": true },
+    {
+      "field": "photos",
+      "name": "图片",
+      "fieldType": "file",
+      "relatedModelID": "market_listing_attach"
+    },
+    {
+      "field": "items",
+      "name": "关联私库谷子",
+      "fieldType": "many2many",
+      "relatedModelID": "owned_item",
+      "associationModelID": "market_listing_owned_item"
+    },
+    { "field": "create_user", "name": "卖家", "dataType": "varchar" },
+    { "field": "create_time", "name": "创建时间", "dataType": "datetime" },
+    { "field": "update_user", "name": "更新人", "dataType": "varchar" },
+    { "field": "update_time", "name": "更新时间", "dataType": "datetime" }
+  ]
+}

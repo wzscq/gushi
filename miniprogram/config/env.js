@@ -8,4 +8,8 @@ module.exports = {
   PHOTOS_FIELD_ID: 'photos',
   USER_MODEL_ID: 'core_user',
   AVATAR_FIELD_ID: 'avatar',
+  MARKET_MODEL_ID: 'market_listing',
+  MARKET_PHOTOS_FIELD_ID: 'photos',
+  MARKET_ITEMS_FIELD_ID: 'items',
+  MARKET_LINK_MODEL_ID: 'market_listing_owned_item',
 };

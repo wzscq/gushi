@@ -1,0 +1,62 @@
+<view class="container" wx:if="{{loading}}">
+  <view class="state text-muted">加载中…</view>
+</view>
+
+<view class="container" wx:elif="{{error}}">
+  <view class="state">
+    <text class="text-error">{{error}}</text>
+    <button class="btn-primary retry" bindtap="loadDetail">重试</button>
+  </view>
+</view>
+
+<view class="container detail" wx:elif="{{item}}">
+  <swiper
+    class="gallery"
+    indicator-dots="{{photos.length > 1}}"
+    circular
+    current="{{current}}"
+    bindchange="onSwiperChange"
+  >
+    <swiper-item wx:for="{{photos}}" wx:key="key">
+      <image class="gallery-img" src="{{item.src}}" mode="aspectFit" wx:if="{{item.src}}" />
+      <view class="gallery-img placeholder" wx:else>
+        <text>{{item.initial}}</text>
+      </view>
+    </swiper-item>
+  </swiper>
+
+  <view class="panel">
+    <text class="title">{{item.title}}</text>
+    <text class="price">¥{{item.priceText}}</text>
+    <view class="row">
+      <text class="label">品类</text>
+      <text class="value">{{item.categoryLabel}}</text>
+    </view>
+    <view class="row" wx:if="{{item.sellerName}}">
+      <text class="label">卖家</text>
+      <text class="value">{{item.sellerName}}</text>
+    </view>
+    <view class="row" wx:if="{{item.listedAtText}}">
+      <text class="label">上架</text>
+      <text class="value">{{item.listedAtText}}</text>
+    </view>
+    <view class="row" wx:if="{{item.status === 'delisted'}}">
+      <text class="label">状态</text>
+      <text class="value">已下架</text>
+    </view>
+    <view class="note-block" wx:if="{{item.note}}">
+      <text class="label">说明</text>
+      <text class="note">{{item.note}}</text>
+    </view>
+  </view>
+
+  <view class="actions" wx:if="{{isOwner}}">
+    <button class="btn-secondary" bindtap="goEdit">编辑</button>
+    <button
+      class="btn-primary"
+      wx:if="{{item.status === 'listed'}}"
+      bindtap="handleUnlist"
+    >下架</button>
+    <button class="btn-primary" wx:else bindtap="handleRelist">重新上架</button>
+  </view>
+</view>

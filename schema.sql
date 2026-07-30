@@ -5,9 +5,10 @@
 --   - schema / 租户：gushi（CRV X-Schema）
 --   - 用户：core_user.id = Session sub = owned_item.create_user
 --   - 主表：owned_item.id = BIGINT AUTO_INCREMENT
---   - 附件：owned_item_attach（photos）、core_user_attach（avatar）；表名约定 {modelId}_attach
+--   - 附件：owned_item_attach（photos）、core_user_attach（avatar）、market_listing_attach；表名约定 {modelId}_attach
 --   - 标签：owned_item.tags 主表文本（`,tag1,tag2,` 分隔，便于 CRV Op.like 筛选）
 --   - 用户角色：core_user.roles（many2many）→ core_role_core_user → core_role
+--   - 市场：market_listing 独立橱窗；弱关联 owned_item（market_listing_owned_item）
 --
 -- 参考：integration.md、res.md、public_api.md v1.3
 
@@ -214,6 +215,96 @@ CREATE TABLE IF NOT EXISTS owned_item_attach (
     ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   COMMENT='谷子图片附件（photos）';
+
+-- ---------------------------------------------------------------------------
+-- market_listing（市场出售橱窗，与私库独立）
+-- modelId: market_listing
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS market_listing (
+  id             BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+  version        INT UNSIGNED    NOT NULL DEFAULT 0 COMMENT '乐观锁',
+
+  title          VARCHAR(255)    NOT NULL DEFAULT '' COMMENT '橱窗标题',
+  category       VARCHAR(32)     NOT NULL DEFAULT 'other' COMMENT '品类（展示用快照）',
+  sell_price     DECIMAL(12,2)   NOT NULL COMMENT '售价',
+  status         VARCHAR(32)     NOT NULL DEFAULT 'listed' COMMENT 'listed|delisted',
+  listed_at      DATETIME(3)     NULL COMMENT '上架时间 UTC',
+  note           VARCHAR(512)    NOT NULL DEFAULT '' COMMENT '公开出售说明',
+
+  create_user    VARCHAR(64)     NOT NULL DEFAULT '' COMMENT '卖家 = core_user.id',
+  create_time    DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  update_user    VARCHAR(64)     NOT NULL DEFAULT '',
+  update_time    DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+
+  PRIMARY KEY (id),
+  KEY idx_market_listing_status_listed (status, listed_at DESC),
+  KEY idx_market_listing_seller (create_user, status, listed_at DESC),
+
+  CONSTRAINT fk_market_listing_seller
+    FOREIGN KEY (create_user) REFERENCES core_user (id)
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  COMMENT='市场出售橱窗';
+
+-- ---------------------------------------------------------------------------
+-- market_listing_attach（橱窗图片）
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS market_listing_attach (
+  id           BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'attach 主键',
+  version      INT UNSIGNED    NOT NULL DEFAULT 0 COMMENT '乐观锁',
+
+  model_id     VARCHAR(64)     NOT NULL DEFAULT 'market_listing' COMMENT '主表 modelId',
+  field_id     VARCHAR(64)     NOT NULL DEFAULT 'photos' COMMENT 'file 虚拟字段名',
+  row_id       BIGINT UNSIGNED NOT NULL COMMENT '主表 market_listing.id',
+
+  path         VARCHAR(512)    NOT NULL COMMENT 'OSS 对象键',
+  name         VARCHAR(255)    NOT NULL DEFAULT '' COMMENT '原始文件名',
+  ext          VARCHAR(16)     NOT NULL DEFAULT '' COMMENT '扩展名，含.',
+
+  sort_order   INT             NOT NULL DEFAULT 0 COMMENT '多图排序',
+
+  create_user  VARCHAR(64)     NOT NULL DEFAULT '',
+  create_time  DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  update_user  VARCHAR(64)     NOT NULL DEFAULT '',
+  update_time  DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+
+  PRIMARY KEY (id),
+  KEY idx_market_listing_attach_row (model_id, field_id, row_id, sort_order),
+  KEY idx_market_listing_attach_path (path(191)),
+
+  CONSTRAINT fk_market_listing_attach_row
+    FOREIGN KEY (row_id) REFERENCES market_listing (id)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  COMMENT='市场橱窗图片附件';
+
+-- ---------------------------------------------------------------------------
+-- market_listing_owned_item（橱窗 ↔ 私库弱多对多）
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS market_listing_owned_item (
+  id                  BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+  version             INT UNSIGNED    NOT NULL DEFAULT 0 COMMENT '乐观锁',
+
+  market_listing_id   BIGINT UNSIGNED NOT NULL COMMENT '橱窗 ID',
+  owned_item_id       BIGINT UNSIGNED NOT NULL COMMENT '私库谷子 ID（弱引用）',
+
+  create_user         VARCHAR(64)     NOT NULL DEFAULT '',
+  create_time         DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  update_user         VARCHAR(64)     NOT NULL DEFAULT '',
+  update_time         DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+
+  PRIMARY KEY (id),
+  UNIQUE KEY uk_market_listing_owned_item (market_listing_id, owned_item_id),
+  KEY idx_mloi_owned_item (owned_item_id),
+
+  CONSTRAINT fk_mloi_listing
+    FOREIGN KEY (market_listing_id) REFERENCES market_listing (id)
+    ON DELETE CASCADE,
+  CONSTRAINT fk_mloi_owned_item
+    FOREIGN KEY (owned_item_id) REFERENCES owned_item (id)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  COMMENT='市场橱窗与私库谷子弱关联';
 
 SET FOREIGN_KEY_CHECKS = 1;
 

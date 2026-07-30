@@ -177,17 +177,77 @@
   white-space: pre-wrap;
 }
 
-.actions {
+.listing-row {
   display: flex;
-  gap: 24rpx;
-  margin: 8rpx 24rpx 0;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f3eef2;
 }
 
+.listing-row:last-child {
+  border-bottom: none;
+}
+
+.listing-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.listing-title {
+  display: block;
+  font-size: 28rpx;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.listing-meta {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: var(--muted);
+}
+
+.listing-price {
+  flex-shrink: 0;
+  margin-left: 16rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.listing-arrow {
+  flex-shrink: 0;
+  margin-left: 8rpx;
+  font-size: 32rpx;
+  color: #d0ccd6;
+}
+
+.actions {
+  display: flex;
+  gap: 16rpx;
+  margin: 8rpx 24rpx 0;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+}
+
+.btn-sell,
 .btn-edit,
 .btn-delete {
   flex: 1;
   border-radius: 24rpx;
-  font-size: 30rpx;
+  font-size: 28rpx;
+  padding: 0;
+  line-height: 80rpx;
+}
+
+.btn-sell {
+  background: var(--mint);
+  color: #ffffff;
+}
+
+.btn-sell::after {
+  border: none;
 }
 
 .btn-edit {

@@ -1,0 +1,27 @@
+{
+  "model": "market_listing_owned_item",
+  "modelID": "market_listing_owned_item",
+  "table": "market_listing_owned_item",
+  "fields": [
+    { "field": "id", "name": "ID", "dataType": "int" },
+    { "field": "version", "name": "数据版本", "dataType": "int" },
+    {
+      "field": "market_listing_id",
+      "name": "橱窗",
+      "dataType": "int",
+      "fieldType": "many2one",
+      "relatedModelID": "market_listing"
+    },
+    {
+      "field": "owned_item_id",
+      "name": "私库谷子",
+      "dataType": "int",
+      "fieldType": "many2one",
+      "relatedModelID": "owned_item"
+    },
+    { "field": "create_user", "name": "创建人", "dataType": "varchar" },
+    { "field": "create_time", "name": "创建时间", "dataType": "datetime" },
+    { "field": "update_user", "name": "更新人", "dataType": "varchar" },
+    { "field": "update_time", "name": "更新时间", "dataType": "datetime" }
+  ]
+}

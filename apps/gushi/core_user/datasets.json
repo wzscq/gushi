@@ -9,6 +9,13 @@
       }
     },
     {
+      "name": "gushi_user_public_profile",
+      "queryRoles": "gushi_user",
+      "Filter": {
+        "status": { "Op.eq": 1 }
+      }
+    },
+    {
       "name": "admin_all_users",
       "queryRoles": "admin",
       "mutationRoles": "admin"

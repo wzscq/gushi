@@ -1,0 +1,58 @@
+<view class="form-page">
+  <view wx:if="{{loading}}" class="loading text-muted">加载中…</view>
+
+  <block wx:else>
+    <view class="section" wx:if="{{!listingId}}">
+      <view class="section-title">私库来源</view>
+      <block wx:if="{{importItemId}}">
+        <text class="source-name">{{title || '已选择'}}</text>
+        <text class="hint">来自私库 #{{importItemId}}，发布时拷贝快照到橱窗</text>
+        <button class="import-btn" bindtap="goLibraryPick">换一件（回私库选择）</button>
+      </block>
+      <block wx:else>
+        <text class="hint">请在私库详情页点击「出售」发布</text>
+        <button class="import-btn" bindtap="goLibraryPick">去私库选择</button>
+      </block>
+    </view>
+
+    <view class="section">
+      <view class="section-title">图片</view>
+      <view class="photos" wx:if="{{photos.length}}">
+        <view class="photo" wx:for="{{photos}}" wx:key="key">
+          <image wx:if="{{item.src}}" src="{{item.src}}" mode="aspectFill" />
+          <view wx:else class="photo-placeholder">…</view>
+        </view>
+      </view>
+      <view wx:elif="{{!listingId}}" class="photo-empty text-muted">
+        从私库详情出售后将自动带入封面
+      </view>
+      <view wx:else class="photo-empty text-muted">暂无图片</view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">出售信息</view>
+      <view class="field">
+        <text class="label">标题</text>
+        <input class="input" placeholder="必填" value="{{title}}" data-field="title" bindinput="onInput" />
+      </view>
+      <view class="field">
+        <text class="label">售价</text>
+        <input class="input" type="digit" placeholder="必填" value="{{sell_price}}" data-field="sell_price" bindinput="onInput" />
+      </view>
+      <view class="field">
+        <text class="label">品类</text>
+        <picker mode="selector" range="{{categories}}" range-key="label" value="{{categoryIndex}}" bindchange="onCategoryChange">
+          <view class="picker">{{categories[categoryIndex].label}}</view>
+        </picker>
+      </view>
+      <view class="field">
+        <text class="label">说明</text>
+        <input class="input" placeholder="可选" value="{{note}}" data-field="note" bindinput="onInput" />
+      </view>
+    </view>
+
+    <button class="btn-primary save-btn" loading="{{saving}}" disabled="{{saving}}" bindtap="handleSave">
+      {{listingId ? '保存' : '发布'}}
+    </button>
+  </block>
+</view>
